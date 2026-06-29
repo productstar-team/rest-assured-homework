@@ -27,6 +27,12 @@
             <version>5.5.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.17.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -36,6 +42,57 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
                 <version>2.22.0</version>
+                <executions>
+                    <!-- Отключаем дефолтный запуск, чтобы управлять порядком вручную -->
+                    <execution>
+                        <id>default-test</id>
+                        <phase>none</phase>
+                    </execution>
+                    <!-- 1. Предварительная настройка данных -->
+                    <execution>
+                        <id>step1-setup</id>
+                        <phase>test</phase>
+                        <goals><goal>test</goal></goals>
+                        <configuration>
+                            <includes>
+                                <include>**/setup/PetClinicSetupTest.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <!-- 2. Позитивный сценарий -->
+                    <execution>
+                        <id>step2-positive</id>
+                        <phase>test</phase>
+                        <goals><goal>test</goal></goals>
+                        <configuration>
+                            <includes>
+                                <include>**/positive/PositiveVisitTest.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <!-- 3. Негативный сценарий -->
+                    <execution>
+                        <id>step3-negative</id>
+                        <phase>test</phase>
+                        <goals><goal>test</goal></goals>
+                        <configuration>
+                            <includes>
+                                <include>**/negative/NegativeVisitTest.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <!-- 4. Базовые тесты из репозитория -->
+                    <execution>
+                        <id>step4-simple</id>
+                        <phase>test</phase>
+                        <goals><goal>test</goal></goals>
+                        <configuration>
+                            <includes>
+                                <include>**/SimpleTest.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
